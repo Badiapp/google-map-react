@@ -59,10 +59,10 @@ const _checkMinZoom = (zoom, minZoom) => {
     if (zoom < minZoom) {
       console.warn(
         'GoogleMap: ' + // eslint-disable-line
-          'minZoom option is less than recommended ' +
-          'minZoom option for your map sizes.\n' +
-          'overrided to value ' +
-          minZoom
+        'minZoom option is less than recommended ' +
+        'minZoom option for your map sizes.\n' +
+        'overrided to value ' +
+        minZoom
       );
     }
   }
@@ -106,6 +106,8 @@ export default class GoogleMap extends Component {
     onZoomAnimationStart: PropTypes.func,
     onZoomAnimationEnd: PropTypes.func,
     onDrag: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDragEnd: PropTypes.func,
     onMapTypeIdChange: PropTypes.func,
     options: PropTypes.any,
     distanceToMouse: PropTypes.func,
@@ -125,7 +127,7 @@ export default class GoogleMap extends Component {
     distanceToMouse(pt, mousePos /* , markerProps */) {
       return Math.sqrt(
         (pt.x - mousePos.x) * (pt.x - mousePos.x) +
-          (pt.y - mousePos.y) * (pt.y - mousePos.y)
+        (pt.y - mousePos.y) * (pt.y - mousePos.y)
       );
     },
     hoverDistance: 30,
@@ -184,16 +186,16 @@ export default class GoogleMap extends Component {
       if (this.props.apiKey) {
         console.warn(
           'GoogleMap: ' + // eslint-disable-line no-console
-            'apiKey is deprecated, use ' +
-            'bootstrapURLKeys={{key: YOUR_API_KEY}} instead.'
+          'apiKey is deprecated, use ' +
+          'bootstrapURLKeys={{key: YOUR_API_KEY}} instead.'
         );
       }
 
       if (this.props.onBoundsChange) {
         console.warn(
           'GoogleMap: ' + // eslint-disable-line no-console
-            'onBoundsChange is deprecated, use ' +
-            'onChange({center, zoom, bounds, ...other}) instead.'
+          'onBoundsChange is deprecated, use ' +
+          'onChange({center, zoom, bounds, ...other}) instead.'
         );
       }
 
@@ -279,14 +281,14 @@ export default class GoogleMap extends Component {
       if (this.props.defaultCenter !== nextProps.defaultCenter) {
         console.warn(
           'GoogleMap: defaultCenter prop changed. ' + // eslint-disable-line
-            "You can't change default props."
+          "You can't change default props."
         );
       }
 
       if (this.props.defaultZoom !== nextProps.defaultZoom) {
         console.warn(
           'GoogleMap: defaultZoom prop changed. ' + // eslint-disable-line
-            "You can't change default props."
+          "You can't change default props."
         );
       }
     }
@@ -309,12 +311,12 @@ export default class GoogleMap extends Component {
         if (
           !currCenter ||
           Math.abs(nextPropsCenter.lat - currCenter.lat) +
-            Math.abs(nextPropsCenter.lng - currCenter.lng) >
-            kEPS
+          Math.abs(nextPropsCenter.lng - currCenter.lng) >
+          kEPS
         ) {
           if (
             Math.abs(nextPropsCenter.lat - centerLatLng.lat) +
-              Math.abs(nextPropsCenter.lng - centerLatLng.lng) >
+            Math.abs(nextPropsCenter.lng - centerLatLng.lng) >
             kEPS
           ) {
             this.map_.panTo({
@@ -751,6 +753,15 @@ export default class GoogleMap extends Component {
           this_.dragTime_ = new Date().getTime();
           this_._onDrag();
         });
+
+        maps.event.addListener(map, 'dragstart', () => {
+          this_._onDragStart();
+        });
+
+        maps.event.addListener(map, 'dragend', () => {
+          this_._onDragEnd();
+        });
+
         // user choosing satellite vs roads, etc
         maps.event.addListener(map, 'maptypeid_changed', () => {
           this_._onMapTypeIdChange(map.getMapTypeId());
@@ -770,10 +781,10 @@ export default class GoogleMap extends Component {
       ) {
         console.warn(
           'GoogleMap: ' + // eslint-disable-line
-            'Usage of internal api objects is dangerous ' +
-            'and can cause a lot of issues.\n' +
-            'To hide this warning add yesIWantToUseGoogleMapApiInternals={true} ' +
-            'to <GoogleMap instance'
+          'Usage of internal api objects is dangerous ' +
+          'and can cause a lot of issues.\n' +
+          'To hide this warning add yesIWantToUseGoogleMapApiInternals={true} ' +
+          'to <GoogleMap instance'
         );
       }
 
@@ -784,6 +795,10 @@ export default class GoogleMap extends Component {
   _getHoverDistance = () => this.props.hoverDistance;
 
   _onDrag = (...args) => this.props.onDrag && this.props.onDrag(...args);
+
+  _onDragStart = (...args) => this.props.onDragStart && this.props.onDragStart(...args);
+
+  _onDragEnd = (...args) => this.props.onDragEnd && this.props.onDragEnd(...args);
 
   _onMapTypeIdChange = (...args) =>
     this.props.onMapTypeIdChange && this.props.onMapTypeIdChange(...args);
@@ -1030,13 +1045,13 @@ export default class GoogleMap extends Component {
 
               size: this.geoService_.hasSize()
                 ? {
-                    width: this.geoService_.getWidth(),
-                    height: this.geoService_.getHeight(),
-                  }
+                  width: this.geoService_.getWidth(),
+                  height: this.geoService_.getHeight(),
+                }
                 : {
-                    width: 0,
-                    height: 0,
-                  },
+                  width: 0,
+                  height: 0,
+                },
             });
           }
 
@@ -1053,17 +1068,17 @@ export default class GoogleMap extends Component {
   render() {
     const mapMarkerPrerender = !this.state.overlayCreated
       ? <GoogleMapMarkersPrerender
-          experimental={this.props.experimental}
-          onChildClick={this._onChildClick}
-          onChildMouseDown={this._onChildMouseDown}
-          onChildMouseEnter={this._onChildMouseEnter}
-          onChildMouseLeave={this._onChildMouseLeave}
-          geoService={this.geoService_}
-          projectFromLeftTop={false}
-          distanceToMouse={this.props.distanceToMouse}
-          getHoverDistance={this._getHoverDistance}
-          dispatcher={this.markersDispatcher_}
-        />
+        experimental={this.props.experimental}
+        onChildClick={this._onChildClick}
+        onChildMouseDown={this._onChildMouseDown}
+        onChildMouseEnter={this._onChildMouseEnter}
+        onChildMouseLeave={this._onChildMouseLeave}
+        geoService={this.geoService_}
+        projectFromLeftTop={false}
+        distanceToMouse={this.props.distanceToMouse}
+        getHoverDistance={this._getHoverDistance}
+        dispatcher={this.markersDispatcher_}
+      />
       : null;
 
     return (
