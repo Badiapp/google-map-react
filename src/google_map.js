@@ -117,6 +117,8 @@ export default class GoogleMap extends Component {
     onZoomAnimationStart: PropTypes.func,
     onZoomAnimationEnd: PropTypes.func,
     onDrag: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDragEnd: PropTypes.func,
     onMapTypeIdChange: PropTypes.func,
     options: PropTypes.any,
     distanceToMouse: PropTypes.func,
@@ -774,6 +776,12 @@ export default class GoogleMap extends Component {
         maps.event.addListener(map, 'drag', () => {
           this_.dragTime_ = new Date().getTime();
           this_._onDrag();
+        });
+        maps.event.addListener(map, 'dragstart', () => {
+          this_._onDragStart();
+        });
+        maps.event.addListener(map, 'dragend', () => {
+          this_._onDragEnd();
         });
         // user choosing satellite vs roads, etc
         maps.event.addListener(map, 'maptypeid_changed', () => {
