@@ -819,6 +819,12 @@ export default class GoogleMap extends Component {
 
   _onDrag = (...args) => this.props.onDrag && this.props.onDrag(...args);
 
+  _onDragStart = (...args) =>
+    this.props.onDragStart && this.props.onDragStart(...args);
+
+  _onDragEnd = (...args) =>
+    this.props.onDragEnd && this.props.onDragEnd(...args);
+
   _onMapTypeIdChange = (...args) =>
     this.props.onMapTypeIdChange && this.props.onMapTypeIdChange(...args);
 
